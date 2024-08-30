@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML File Text Replacer</title>
+</head>
+<body>
+    <h1>Second Wind - Name and Avatar Updater</h1>
+    <input type="file" id="fileInput" accept=".html"><br><br>
+    
+    <label for="sceneName">Scene Name:</label>
+    <input type="text" id="sceneName"><br><br>
+    
+    <fieldset>
+        <legend>Character 1</legend>
+        <label for="name1">Replace "Jo / Orrin / Henry" with:</label>
+        <input type="text" id="name1"><br><br>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Character 2</legend>
+        <label for="name2">Replace "Passion / Lloyd / Lin" with:</label>
+        <input type="text" id="name2"><br><br>
+    </fieldset>
+    
+    <button onclick="processFile()">Process and Save File</button>
+    
+    <h2>Modified HTML Content</h2>
+    <pre id="output"></pre>
+
+    <script>
+        const imgSrcToReplace1 = "https://cdn.discordapp.com/avatars/103205765401051136/8c1655dea502671a68993b791edbcc14.png?size=512"; // Placeholder for the first avatar URL to replace
+        const imgSrcToReplace2 = "https://cdn.discordapp.com/avatars/296961549808173056/c96b14a2f7c1539489572cc1b2f854fe.png?size=512";
+
+        function processFile() {
+            const fileInput = document.getElementById('fileInput');
+            const sceneName = document.getElementById('sceneName').value;
+            const name1 = document.getElementById('name1').value;
+            const name2 = document.getElementById('name2').value;
+
+            if (fileInput.files.length === 0) {
+                alert('Please select an HTML file.');
+                return false;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                let modifiedContent = event.target.result;
+
+                // Load the JSON file
+                fetch('https://raw.githubusercontent.com/SilKo-Dev/silko-dev.github.io/main/SecondWindAvatars.json')
+                    .then(response => response.json())
+                    .then(avatars => {
+                        const avatar1 = avatars[name1];
+                        const avatar2 = avatars[name2];
+
+                        const stringToReplace1 = "Jo / Orrin / Henry"; // Placeholder for the first string to replace
+                        const stringToReplace2 = "Passion / Lloyd / Lin"; // Placeholder for the second string to replace
+
+                        const containsString1 = modifiedContent.includes(stringToReplace1);
+                        const containsString2 = modifiedContent.includes(stringToReplace2);
+                        const containsImgSrc1 = modifiedContent.includes(imgSrcToReplace1);
+                        const containsImgSrc2 = modifiedContent.includes(imgSrcToReplace2);
+
+                        if (!containsString1 && !containsString2 && !containsImgSrc1 && !containsImgSrc2) {
+                            return;
+                        }
+
+                        if (containsString1) {
+                            modifiedContent = modifiedContent.replace(new RegExp(stringToReplace1, 'g'), name1);
+                        }
+
+                        if (containsString2) {
+                            modifiedContent = modifiedContent.replace(new RegExp(stringToReplace2, 'g'), name2);
+                        }
+
+                        if (containsImgSrc1 && avatar1) {
+                            modifiedContent = modifiedContent.replace(new RegExp(`src="${imgSrcToReplace1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `src="${avatar1}"`);
+                        }
+
+                        if (containsImgSrc2 && avatar2) {
+                            modifiedContent = modifiedContent.replace(new RegExp(`src="${imgSrcToReplace2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `src="${avatar2}"`);
+                        }
+
+                        document.getElementById('output').textContent = modifiedContent;
+                        saveFile(name1, name2, sceneName, modifiedContent);
+                    })
+                    .catch(error => {
+                        console.error('Error loading avatars:', error);
+                        alert('Failed to load avatars.');
+                    });
+            };
+
+            reader.readAsText(file);
+        }
+
+        function saveFile(name1, name2, sceneName, modifiedContent) {
+            if (!modifiedContent) {
+                alert('No content to save. Please process a file first.');
+                return;
+            }
+
+            const blob = new Blob([modifiedContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Second Wind - ${name1}, ${name2} - ${sceneName}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function processAndSaveFile() {
+            if (processFile()) {
+                // Save file is called within processFile() after processing is done
+            }
+        }
+    </script>
+</body>
+</html>
