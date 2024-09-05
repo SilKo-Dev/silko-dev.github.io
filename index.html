@@ -12,8 +12,24 @@
     <label for="sceneName">Scene Name:</label>
     <input type="text" id="sceneName"><br><br>
 
-    <label for="month">Month:</label>
-    <input type="month" id="month"><br><br>
+    <div id="datepicker">
+        <label for="month">Month:</label>
+        <select id="month">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <input type="hidden" id="selectedYear" name="selectedYear">
+    </div>
     
     <fieldset>
         <legend>Character 1</legend>
@@ -36,10 +52,17 @@
         const imgSrcToReplace1 = "https://cdn.discordapp.com/avatars/103205765401051136/8c1655dea502671a68993b791edbcc14.png?size=512"; // Placeholder for the first avatar URL to replace
         const imgSrcToReplace2 = "https://cdn.discordapp.com/avatars/296961549808173056/c96b14a2f7c1539489572cc1b2f854fe.png?size=512";
 
+        function updateMonthOptions() {
+        const monthSelect = document.getElementById('month');
+        const currentMonth = new Date().getMonth() + 1;
+        monthSelect.value = currentMonth;
+        }
+
+        updateMonthOptions();
+
         function processFile() {
             const fileInput = document.getElementById('fileInput');
             const sceneName = document.getElementById('sceneName').value;
-            const month = document.querySelector('input[type="month"]');
             const name1 = document.getElementById('name1').value;
             const name2 = document.getElementById('name2').value;
 
@@ -111,7 +134,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Second Wind - ${month} - ${name1}, ${name2} - ${sceneName}.html`;
+            a.download = `Second Wind - ${monthSelect.value} - ${name1}, ${name2} - ${sceneName}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
