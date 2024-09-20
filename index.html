@@ -11,7 +11,8 @@
     
     <label for="sceneName">Scene Name:</label>
     <input type="text" id="sceneName"><br><br>
-    <input type="month" id="month"><br><br>
+    <label for="month">Month:</label>
+    <input type="text" id="month"><br><br>
     
     <fieldset>
         <legend>Character 1</legend>
@@ -109,7 +110,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Second Wind - ${month.value} - ${name1}, ${name2} - ${sceneName}.html`;
+            a.download = `Second Wind - ${month} - ${name1}, ${name2} - ${sceneName}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
