@@ -2,7 +2,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #121212; /* Dark background */
-    color: #e0e0e0; /* Light text for contrast */
+    color: #d3d3d3; /* Light, pastel-like text for contrast */
     margin: 0;
     padding: 60px;
     padding-left: 80px; /* Increase padding for more space on the sides */
@@ -16,7 +16,7 @@ h1 {
     text-align: center;
     font-size: 40px; /* Increase the font size for a bold look */
     color: #fff; /* White text for contrast */
-    background: linear-gradient(90deg, #1e90ff, #ff1493); /* Gradient background */
+    background: linear-gradient(90deg, #add8e6, #ffb6c1); /* Softer pastel gradient */
     -webkit-background-clip: text; /* Clip gradient to text */
     -webkit-text-fill-color: transparent; /* Make the text transparent to show the gradient */
     font-family: 'Poppins', sans-serif; /* Use a modern, clean font */
@@ -61,28 +61,28 @@ input[type="file"], input[type="text"], select {
     margin-top: 8px;
     margin-bottom: 20px;
     font-size: 16px;
-    border: 1px solid #555; /* Darker border for dark mode */
+    border: 1px solid #666; /* Softer, lighter border for dark mode */
     background-color: #333; /* Dark input background */
-    color: #e0e0e0; /* Light text */
+    color: #d3d3d3; /* Lighter pastel text */
     border-radius: 5px;
     box-sizing: border-box;
 }
 
 input::placeholder {
-    color: #888; /* Lighter placeholder text */
+    color: #999; /* Softer placeholder text */
 }
 
 /* Label styling */
 label {
     font-weight: bold;
-    color: #bbb; /* Lighter label color */
+    color: #c3c3c3; /* Softer label color */
     display: block;
     margin-bottom: 6px;
 }
 
 /* Fieldset styling */
 fieldset {
-    border: 2px solid #1e90ff; /* Blue color from the gradient */
+    border: 2px solid #add8e6; /* Pastel blue color */
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
@@ -92,14 +92,14 @@ fieldset {
 legend {
     font-size: 18px;
     font-weight: bold;
-    color: #ff1493; /* Pink color from the gradient */
+    color: #ffb6c1; /* Softer pastel pink from the gradient */
 }
 
 /* Button styling */
 button {
     width: 100%;
     padding: 14px;
-    background-color: #1e90ff; /* Blue gradient color */
+    background-color: #add8e6; /* Pastel blue from the gradient */
     color: white;
     font-size: 18px;
     border: none;
@@ -109,14 +109,14 @@ button {
 }
 
 button:hover {
-    background-color: #ff1493; /* Pink gradient color */
+    background-color: #ffb6c1; /* Pastel pink from the gradient */
 }
 
 /* Output area styling */
 #output {
     background-color: #333; /* Darker output background */
-    border: 1px solid #555;
-    color: #e0e0e0; /* Light text */
+    border: 1px solid #666;
+    color: #d3d3d3; /* Lighter pastel text */
     padding: 10px;
     white-space: pre-wrap;
     word-wrap: break-word;
