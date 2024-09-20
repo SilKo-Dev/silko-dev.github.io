@@ -82,7 +82,7 @@ label {
 
 /* Fieldset styling */
 fieldset {
-    border: 2px solid #4CAF50; /* Green border */
+    border: 2px solid #1e90ff; /* Blue color from the gradient */
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
@@ -92,14 +92,14 @@ fieldset {
 legend {
     font-size: 18px;
     font-weight: bold;
-    color: #4CAF50; /* Green text */
+    color: #ff1493; /* Pink color from the gradient */
 }
 
 /* Button styling */
 button {
     width: 100%;
     padding: 14px;
-    background-color: #4CAF50;
+    background-color: #1e90ff; /* Blue gradient color */
     color: white;
     font-size: 18px;
     border: none;
@@ -109,7 +109,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #ff1493; /* Pink gradient color */
 }
 
 /* Output area styling */
