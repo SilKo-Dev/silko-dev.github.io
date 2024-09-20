@@ -7,7 +7,6 @@ body {
     padding: 60px;
     padding-left: 80px; /* Increase padding for more space on the sides */
     padding-right: 80px; /* Increase padding for more space on the sides */
-    display: flex;
     justify-content: center;
     min-height: 100vh;
     box-sizing: border-box;
