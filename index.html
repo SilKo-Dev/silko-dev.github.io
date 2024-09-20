@@ -55,7 +55,7 @@
         function processFile() {
             const fileInput = document.getElementById('fileInput');
             const sceneName = document.getElementById('sceneName').value;
-            const month = document.getElementById('months').value;
+            const months = document.getElementById('months');
             const name1 = document.getElementById('name1').value;
             const name2 = document.getElementById('name2').value;
 
@@ -127,7 +127,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Second Wind - ${month.value} - ${name1}, ${name2} - ${sceneName}.html`;
+            a.download = `Second Wind - ${months.value} - ${name1}, ${name2} - ${sceneName}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
