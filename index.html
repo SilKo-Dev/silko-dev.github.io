@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML File Text Replacer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Second Wind - Name and Avatar Updater</h1>
@@ -11,8 +12,24 @@
     
     <label for="sceneName">Scene Name:</label>
     <input type="text" id="sceneName"><br><br>
-    <label for="month">Month:</label>
-    <input type="text" id="month"><br><br>
+    <div class="dropdown-container"></div>
+        <label for="months">Select Month:</label>
+        <select id="months">
+            <option value="">--Select a Month--</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select>
+    </div><br><br>
     
     <fieldset>
         <legend>Character 1</legend>
@@ -38,7 +55,7 @@
         function processFile() {
             const fileInput = document.getElementById('fileInput');
             const sceneName = document.getElementById('sceneName').value;
-            const month = document.getElementById('month').value;
+            const month = document.getElementById('months').value;
             const name1 = document.getElementById('name1').value;
             const name2 = document.getElementById('name2').value;
 
