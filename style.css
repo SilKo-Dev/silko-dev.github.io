@@ -10,9 +10,33 @@ body {
 
 h1 {
     text-align: center;
-    color: #333;
-    font-size: 26px;
-    margin-bottom: 20px;
+    font-size: 40px; /* Increase the font size for a bold look */
+    color: #fff; /* White text for contrast */
+    background: linear-gradient(90deg, #1e90ff, #ff1493); /* Gradient background */
+    -webkit-background-clip: text; /* Clip gradient to text */
+    -webkit-text-fill-color: transparent; /* Make the text transparent to show the gradient */
+    font-family: 'Poppins', sans-serif; /* Use a modern, clean font */
+    letter-spacing: 2px; /* Add letter spacing for a sleek feel */
+    text-transform: uppercase; /* Make the text all uppercase */
+    margin-bottom: 30px; /* Add more margin for spacing */
+    position: relative; /* For the shadow effects */
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -8px;
+    width: 60%;
+    height: 4px;
+    background-color: rgba(0, 0, 0, 0.15); /* Soft shadow line underneath */
+    border-radius: 2px;
+}
+
+h1:hover {
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow effect on hover */
+    transition: text-shadow 0.3s ease-in-out;
 }
 
 /* Form container to align content */
