@@ -74,36 +74,41 @@
                 fetch('https://raw.githubusercontent.com/SilKo-Dev/silko-dev.github.io/main/SecondWindAvatars.json')
                     .then(response => response.json())
                     .then(avatars => {
-                        const avatar1 = avatars[name1];
-                        const avatar2 = avatars[name2];
+                        let stringToReplace1 = ""; // Placeholder for the Revelka string to replace
+                        let stringToReplace2 = ""; // Placeholder for the Moondance string to replace
 
-                        const stringToReplace1 = "Jo / Orrin / Henry"; // Placeholder for the first string to replace
-                        const stringToReplace2 = "Passion / Lloyd / Lin"; // Placeholder for the second string to replace
+						const imageUrls = new Set();
+						const usernames = new Set();
 
-                        const containsString1 = modifiedContent.includes(stringToReplace1);
-                        const containsString2 = modifiedContent.includes(stringToReplace2);
-                        const containsImgSrc1 = modifiedContent.includes(imgSrcToReplace1);
-                        const containsImgSrc2 = modifiedContent.includes(imgSrcToReplace2);
+						// Get all message groups
+						document.querySelectorAll(".chatlog__message-group").forEach(message => {
+							const imgTag = message.querySelector(".chatlog__avatar"); // Find the avatar image
+							const nameTag = message.querySelector("[data-user-id]"); // Find the username
 
-                        if (!containsString1 && !containsString2 && !containsImgSrc1 && !containsImgSrc2) {
-                            return;
-                        }
+							if (imgTag) imageUrls.add(imgTag.src); // Store unique image URLs
+							if (nameTag) usernames.add(nameTag.textContent.trim()); // Store unique usernames
+						});
 
-                        if (containsString1) {
-                            modifiedContent = modifiedContent.replace(new RegExp(stringToReplace1, 'g'), name1);
-                        }
+						// Convert sets to arrays
+						const imageArray = Array.from(imageUrls);
+						const nameArray = Array.from(usernames);
+						
+						const newImageArray = [avatars[name1], avatars[name2]];
+						const newNameArray = [name1, name2];
 
-                        if (containsString2) {
-                            modifiedContent = modifiedContent.replace(new RegExp(stringToReplace2, 'g'), name2);
-                        }
+                        // Replace each old URL with new URL
+						imageArray.forEach((oldUrl, index) => {
+							if (newImageArray[index]) {
+								modifiedContent = modifiedContent.replaceAll(oldUrl, newImageArray[index]);
+							}
+						});
 
-                        if (containsImgSrc1 && avatar1) {
-                            modifiedContent = modifiedContent.replace(new RegExp(`src="${imgSrcToReplace1.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `src="${avatar1}"`);
-                        }
-
-                        if (containsImgSrc2 && avatar2) {
-                            modifiedContent = modifiedContent.replace(new RegExp(`src="${imgSrcToReplace2.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g'), `src="${avatar2}"`);
-                        }
+						// Replace each old name with new name
+						nameArray.forEach((oldName, index) => {
+							if (newNameArray[index]) {
+								modifiedContent = modifiedContent.replaceAll(oldName, newNameArray[index]);
+							}
+						});
 
                         document.getElementById('output').textContent = modifiedContent;
                         saveFile(name1, name2, sceneName, modifiedContent);
