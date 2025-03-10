@@ -79,7 +79,7 @@
 						const usernames = new Set();
 
 						// Get all message groups
-						document.querySelectorAll(".chatlog__message-group").forEach(message => {
+						modifiedContent.querySelectorAll(".chatlog__message-group").forEach(message => {
 							const imgTag = message.querySelector(".chatlog__avatar"); // Find the avatar image
 							const nameTag = message.querySelector("[data-user-id]"); // Find the username
 
