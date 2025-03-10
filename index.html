@@ -49,8 +49,6 @@
     <pre id="output"></pre>
 
     <script>
-        const imgSrcToReplace1 = "https://cdn.discordapp.com/avatars/103205765401051136/8c1655dea502671a68993b791edbcc14.png?size=512"; // Placeholder for the first avatar URL to replace
-        const imgSrcToReplace2 = "https://cdn.discordapp.com/avatars/296961549808173056/c96b14a2f7c1539489572cc1b2f854fe.png?size=512";
 
         function processFile() {
             const fileInput = document.getElementById('fileInput');
@@ -93,6 +91,9 @@
 						const imageArray = Array.from(imageUrls);
 						const nameArray = Array.from(usernames);
 						
+						console.log("Original Image URLs:", imageArray);
+						console.log("Original Usernames:", nameArray);
+						
 						const newImageArray = [avatars[name1], avatars[name2]];
 						const newNameArray = [name1, name2];
 
@@ -109,6 +110,8 @@
 								modifiedContent = modifiedContent.replaceAll(oldName, newNameArray[index]);
 							}
 						});
+
+						console.log("Modified Content:", modifiedContent);
 
                         document.getElementById('output').textContent = modifiedContent;
                         saveFile(name1, name2, sceneName, modifiedContent);
