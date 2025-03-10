@@ -12,118 +12,114 @@
     
     <label for="sceneName">Scene Name:</label>
     <input type="text" id="sceneName"><br><br>
-    <div class="dropdown-container"></div>
-        <label for="months">Select Month:</label>
-        <select id="months">
-            <option value="">--Select a Month--</option>
-            <option value="Januar">Januar</option>
-            <option value="Februar">Februar</option>
-            <option value="März">März</option>
-            <option value="April">April</option>
-            <option value="Mai">Mai</option>
-            <option value="Juni">Juni</option>
-            <option value="Juli">Juli</option>
-            <option value="August">August</option>
-            <option value="September">September</option>
-            <option value="Oktober">Oktober</option>
-            <option value="November">November</option>
-            <option value="Dezember">Dezember</option>
-        </select>
-    </div><br><br>
-    
+
+    <label for="months">Select Month:</label>
+    <select id="months">
+        <option value="">--Select a Month--</option>
+        <option value="Januar">Januar</option>
+        <option value="Februar">Februar</option>
+        <option value="März">März</option>
+        <option value="April">April</option>
+        <option value="Mai">Mai</option>
+        <option value="Juni">Juni</option>
+        <option value="Juli">Juli</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="Oktober">Oktober</option>
+        <option value="November">November</option>
+        <option value="Dezember">Dezember</option>
+    </select>
+    <br><br>
+
     <fieldset>
         <legend>Character 1</legend>
-        <label for="name1">Replace "Jo / Orrin / Henry" with:</label>
+        <label for="name1">Replace Character 1 with:</label>
         <input type="text" id="name1"><br><br>
     </fieldset>
-    
+
     <fieldset>
         <legend>Character 2</legend>
-        <label for="name2">Replace "Passion / Lloyd / Lin" with:</label>
+        <label for="name2">Replace Character 2 with:</label>
         <input type="text" id="name2"><br><br>
     </fieldset>
-    
-    <button onclick="processFile()">Process and Save File</button>
-    
+
+    <button id="processBtn" disabled>Process and Save File</button>
+
     <h2>Modified HTML Content</h2>
     <pre id="output"></pre>
 
     <script>
+        let modifiedContent = "";
 
-        function processFile() {
-            const fileInput = document.getElementById('fileInput');
-            const sceneName = document.getElementById('sceneName').value;
-            const months = document.getElementById('months');
-            const name1 = document.getElementById('name1').value;
-            const name2 = document.getElementById('name2').value;
+        document.getElementById("fileInput").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            if (fileInput.files.length === 0) {
-                alert('Please select an HTML file.');
-                return false;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                modifiedContent = event.target.result;
+                document.getElementById("processBtn").disabled = false;
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById("processBtn").addEventListener("click", function () {
+            if (!modifiedContent) {
+                console.error("No content loaded!");
+                return;
             }
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+            const sceneName = document.getElementById('sceneName').value.trim();
+            const name1 = document.getElementById('name1').value.trim();
+            const name2 = document.getElementById('name2').value.trim();
 
-            reader.onload = function(event) {
-                let modifiedContent = event.target.result;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(modifiedContent, "text/html");
 
-                // Load the JSON file
-                fetch('https://raw.githubusercontent.com/SilKo-Dev/silko-dev.github.io/main/SecondWindAvatars.json')
-                    .then(response => response.json())
-                    .then(avatars => {
-                        let stringToReplace1 = ""; // Placeholder for the Revelka string to replace
-                        let stringToReplace2 = ""; // Placeholder for the Moondance string to replace
+            const imageUrls = new Set();
+            const usernames = new Set();
 
-						const imageUrls = new Set();
-						const usernames = new Set();
+            doc.querySelectorAll(".chatlog__message-group").forEach(message => {
+                const imgTag = message.querySelector(".chatlog__avatar");
+                const nameTag = message.querySelector("[data-user-id]");
 
-						// Get all message groups
-						modifiedContent.querySelectorAll(".chatlog__message-group").forEach(message => {
-							const imgTag = message.querySelector(".chatlog__avatar"); // Find the avatar image
-							const nameTag = message.querySelector("[data-user-id]"); // Find the username
+                if (imgTag) imageUrls.add(imgTag.src);
+                if (nameTag) usernames.add(nameTag.textContent.trim());
+            });
 
-							if (imgTag) imageUrls.add(imgTag.src); // Store unique image URLs
-							if (nameTag) usernames.add(nameTag.textContent.trim()); // Store unique usernames
-						});
+            const imageArray = Array.from(imageUrls);
+            const nameArray = Array.from(usernames);
 
-						// Convert sets to arrays
-						const imageArray = Array.from(imageUrls);
-						const nameArray = Array.from(usernames);
-						
-						console.log("Original Image URLs:", imageArray);
-						console.log("Original Usernames:", nameArray);
-						
-						const newImageArray = [avatars[name1], avatars[name2]];
-						const newNameArray = [name1, name2];
+            console.log("Original Image URLs:", imageArray);
+            console.log("Original Usernames:", nameArray);
 
-                        // Replace each old URL with new URL
-						imageArray.forEach((oldUrl, index) => {
-							if (newImageArray[index]) {
-								modifiedContent = modifiedContent.replaceAll(oldUrl, newImageArray[index]);
-							}
-						});
+            fetch('https://raw.githubusercontent.com/SilKo-Dev/silko-dev.github.io/main/SecondWindAvatars.json')
+                .then(response => response.json())
+                .then(avatars => {
+                    const newImageArray = [avatars[name1] || "", avatars[name2] || ""];
+                    const newNameArray = [name1, name2];
 
-						// Replace each old name with new name
-						nameArray.forEach((oldName, index) => {
-							if (newNameArray[index]) {
-								modifiedContent = modifiedContent.replaceAll(oldName, newNameArray[index]);
-							}
-						});
-
-						console.log("Modified Content:", modifiedContent);
-
-                        document.getElementById('output').textContent = modifiedContent;
-                        saveFile(name1, name2, sceneName, modifiedContent);
-                    })
-                    .catch(error => {
-                        console.error('Error loading avatars:', error);
-                        alert('Failed to load avatars.');
+                    imageArray.forEach((oldUrl, index) => {
+                        if (newImageArray[index]) {
+                            modifiedContent = modifiedContent.split(oldUrl).join(newImageArray[index]);
+                        }
                     });
-            };
 
-            reader.readAsText(file);
-        }
+                    nameArray.forEach((oldName, index) => {
+                        if (newNameArray[index]) {
+                            modifiedContent = modifiedContent.split(oldName).join(newNameArray[index]);
+                        }
+                    });
+
+                    console.log("Modified Content:", modifiedContent);
+                    document.getElementById('output').textContent = modifiedContent;
+                    saveFile(name1, name2, sceneName, modifiedContent);
+                })
+                .catch(error => {
+                    console.error('Error loading avatars:', error);
+                    alert('Failed to load avatars.');
+                });
+        });
 
         function saveFile(name1, name2, sceneName, modifiedContent) {
             if (!modifiedContent) {
@@ -131,21 +127,17 @@
                 return;
             }
 
+            const selectedMonth = document.getElementById('months').value;
             const blob = new Blob([modifiedContent], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
+
             a.href = url;
-            a.download = `Second Wind - beendet ${months.value} - ${sceneName}.html`;
+            a.download = `Second Wind - beendet ${selectedMonth} - ${sceneName}.html`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        }
-
-        function processAndSaveFile() {
-            if (processFile()) {
-                // Save file is called within processFile() after processing is done
-            }
         }
     </script>
 </body>
