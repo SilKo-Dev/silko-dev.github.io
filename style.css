@@ -138,3 +138,45 @@ button:hover {
         max-width: 600px;
     }
 }
+
+/* Styling for the character section */
+.character-label-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between label and buttons */
+    margin-bottom: 10px;
+}
+
+/* Circular buttons for add (+) and remove (-) */
+#addCharacter, #removeCharacter {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #007BFF;
+    color: white;
+}
+
+#removeCharacter {
+    background-color: #DC3545;
+}
+
+/* Hover effect */
+#addCharacter:hover {
+    background-color: #0056b3;
+}
+
+#removeCharacter:hover {
+    background-color: #a71d2a;
+}
+
+/* Disabled button styling */
+#removeCharacter:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

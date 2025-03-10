@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML File Text Replacer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Second Wind - Name and Avatar Updater</h1>
+    <input type="file" id="fileInput" accept=".html"><br><br>
+
+    <label for="sceneName">Scene Name:</label>
+    <input type="text" id="sceneName"><br><br>
+
+    <label for="months">Select Month:</label>
+    <select id="months">
+        <option value="">--Select a Month--</option>
+        <option value="Januar">Januar</option>
+        <option value="Februar">Februar</option>
+        <option value="März">März</option>
+        <option value="April">April</option>
+        <option value="Mai">Mai</option>
+        <option value="Juni">Juni</option>
+        <option value="Juli">Juli</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="Oktober">Oktober</option>
+        <option value="November">November</option>
+        <option value="Dezember">Dezember</option>
+    </select>
+    <br><br>
+
+    <h2 class="character-label-container">
+		Characters
+		<button id="removeCharacter">−</button>
+		<button id="addCharacter">+</button>
+	</h2>
+	<div id="characterContainer">
+		<!-- Character fields go here -->
+	</div>
+    
+    <br>
+    <button id="processBtn" disabled>Process and Save File</button>
+
+    <h2>Modified HTML Content</h2>
+    <pre id="output"></pre>
+
+    <script>
+        const characterContainer = document.getElementById("characterContainer");
+        const addCharacterBtn = document.getElementById("addCharacter");
+        const removeCharacterBtn = document.getElementById("removeCharacter");
+
+        let characterCount = 2; // Start with 2 character fields (default)
+        const minCharacters = 1;
+        const maxCharacters = 10;
+
+        function createCharacterField(index) {
+            const fieldset = document.createElement("fieldset");
+            fieldset.setAttribute("id", `char${index}`);
+
+            fieldset.innerHTML = `
+                <legend>Character ${index}</legend>
+                <label for="name${index}">Replace Character ${index} with:</label>
+                <input type="text" id="name${index}" class="nameInput"><br><br>
+            `;
+            characterContainer.appendChild(fieldset);
+        }
+
+        function updateCharacterButtons() {
+            removeCharacterBtn.disabled = characterCount <= minCharacters;
+            addCharacterBtn.disabled = characterCount >= maxCharacters;
+        }
+
+        addCharacterBtn.addEventListener("click", () => {
+            if (characterCount < maxCharacters) {
+                characterCount++;
+                createCharacterField(characterCount);
+                updateCharacterButtons();
+            }
+        });
+
+        removeCharacterBtn.addEventListener("click", () => {
+            if (characterCount > minCharacters) {
+                document.getElementById(`char${characterCount}`).remove();
+                characterCount--;
+                updateCharacterButtons();
+            }
+        });
+
+        // Initialize with 2 character fields
+        for (let i = 1; i <= characterCount; i++) {
+            createCharacterField(i);
+        }
+        updateCharacterButtons();
+
+        document.getElementById("fileInput").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                modifiedContent = event.target.result;
+                document.getElementById("processBtn").disabled = false;
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById("processBtn").addEventListener("click", function () {
+            if (!modifiedContent) {
+                console.error("No content loaded!");
+                return;
+            }
+
+            const sceneName = document.getElementById('sceneName').value.trim();
+            const nameInputs = document.querySelectorAll(".nameInput");
+            const newNameArray = Array.from(nameInputs).map(input => input.value.trim());
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(modifiedContent, "text/html");
+
+            const imageUrls = new Set();
+            const usernames = new Set();
+
+            doc.querySelectorAll(".chatlog__message-group").forEach(message => {
+                const imgTag = message.querySelector(".chatlog__avatar");
+                const nameTag = message.querySelector("[data-user-id]");
+
+                if (imgTag) imageUrls.add(imgTag.src);
+                if (nameTag) usernames.add(nameTag.textContent.trim());
+            });
+
+            const imageArray = Array.from(imageUrls);
+            const nameArray = Array.from(usernames);
+
+            console.log("Original Image URLs:", imageArray);
+            console.log("Original Usernames:", nameArray);
+
+            fetch('https://raw.githubusercontent.com/SilKo-Dev/silko-dev.github.io/main/SecondWindAvatars.json')
+                .then(response => response.json())
+                .then(avatars => {
+                    const newImageArray = newNameArray.map(name => avatars[name] || "");
+
+                    imageArray.forEach((oldUrl, index) => {
+                        if (newImageArray[index]) {
+                            modifiedContent = modifiedContent.split(oldUrl).join(newImageArray[index]);
+                        }
+                    });
+
+                    nameArray.forEach((oldName, index) => {
+                        if (newNameArray[index]) {
+                            modifiedContent = modifiedContent.split(oldName).join(newNameArray[index]);
+                        }
+                    });
+
+                    console.log("Modified Content:", modifiedContent);
+                    document.getElementById('output').textContent = modifiedContent;
+                    saveFile(newNameArray, sceneName, modifiedContent);
+                })
+                .catch(error => {
+                    console.error('Error loading avatars:', error);
+                    alert('Failed to load avatars.');
+                });
+        });
+
+        function saveFile(nameArray, sceneName, modifiedContent) {
+            if (!modifiedContent) {
+                alert('No content to save. Please process a file first.');
+                return;
+            }
+
+            const selectedMonth = document.getElementById('months').value;
+            const blob = new Blob([modifiedContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+
+            a.href = url;
+            a.download = `Second Wind - beendet ${selectedMonth} - ${sceneName}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
